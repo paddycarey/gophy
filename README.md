@@ -2,7 +2,8 @@ gophy
 =====
 
 gophy is a Golang wrapper for the [Giphy.com](http://www.giphy.com) API. gophy
-is a WIP but aims to eventually have 100% coverage of the API.
+is a WIP but aims to eventually have 100% coverage of the API. Gophy requires
+Go >= 1.1.
 
 See godoc for full library documentation.
 
