@@ -1,11 +1,14 @@
 gophy
 =====
 
+[![Build Status](https://travis-ci.org/paddycarey/gophy.svg?branch=master)](https://travis-ci.org/paddycarey/gophy)
+[![GoDoc](https://godoc.org/github.com/paddycarey/gophy?status.svg)](https://godoc.org/github.com/paddycarey/gophy)
+
 gophy is a Golang wrapper for the [Giphy.com](http://www.giphy.com) API. gophy
 is a WIP but aims to eventually have 100% coverage of the API. Gophy requires
 Go >= 1.1.
 
-See godoc for full library documentation.
+See [GoDoc](https://godoc.org/github.com/paddycarey/gophy) for full library documentation.
 
 
 ### TODO
