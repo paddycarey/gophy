@@ -1,7 +1,7 @@
 // This file contains all test data/tables for our table driven tests
 package tests
 
-var SearchTestData = []struct {
+var SearchGifsTestData = []struct {
 	ApiKey              string
 	Q                   string
 	Limit               int
@@ -59,7 +59,7 @@ var GetGifsByIdTestData = []struct {
 	{"sf", []string{"qe3gu0bH7Shj2"}, 0, true},
 }
 
-var TranslateTestData = []struct {
+var TranslateGifTestData = []struct {
 	ApiKey                 string
 	Q                      string
 	Rating                 string
@@ -74,7 +74,7 @@ var TranslateTestData = []struct {
 	{"sf", "facepalm", "", true},
 }
 
-var TrendingTestData = []struct {
+var TrendingGifsTestData = []struct {
 	ApiKey              string
 	Rating              string
 	Limit               int

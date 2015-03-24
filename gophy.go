@@ -119,11 +119,11 @@ func (c *Client) GetGifsById(ids ...string) ([]*Gif, error) {
 	return pr.Data, nil
 }
 
-// Search searches the Giphy API for GIFs with the specified options. Returns a
-// slice containing the returned gifs, the total number of images available for
-// the specified query (so that you can paginate your requests as required),
-// and an error if one occured.
-func (c *Client) Search(q string, rating string, limit int, offset int) ([]*Gif, int, error) {
+// SearchGifs searches the Giphy API for GIFs with the specified options.
+// Returns a slice containing the returned gifs, the total number of images
+// available for the specified query (so that you can paginate your requests as
+// required), and an error if one occured.
+func (c *Client) SearchGifs(q string, rating string, limit int, offset int) ([]*Gif, int, error) {
 
 	// ensure the value for `limit` is valid
 	if err := validateLimit(limit, 1, 100); err != nil {
@@ -165,12 +165,12 @@ func (c *Client) Search(q string, rating string, limit int, offset int) ([]*Gif,
 	return sr.Data, sr.Pagination.TotalCount, nil
 }
 
-// Translate is prototype endpoint for using Giphy as a translation engine for
-// a GIF dialect. The translate API draws on search, but uses the Giphy
+// TranslateGifs is prototype endpoint for using Giphy as a translation engine
+// for a GIF dialect. The translate API draws on search, but uses the Giphy
 // "special sauce" to handle translating from one vocabulary to another. In
 // this case, words and phrases to GIFs. Returns a single GIF from the Giphy
 // API.
-func (c *Client) Translate(q string, rating string) (*Gif, error) {
+func (c *Client) TranslateGif(q string, rating string) (*Gif, error) {
 
 	// check that a query string was actually passed in
 	if len(q) < 1 {
@@ -199,9 +199,9 @@ func (c *Client) Translate(q string, rating string) (*Gif, error) {
 	return sr.Data, nil
 }
 
-// Trending fetches GIFs currently trending online. The data returned mirrors
-// that used to create The Hot 100 list of GIFs on Giphy.
-func (c *Client) Trending(rating string, limit int) ([]*Gif, error) {
+// TrendingGifs fetches GIFs currently trending online. The data returned
+// mirrors that used to create The Hot 100 list of GIFs on Giphy.
+func (c *Client) TrendingGifs(rating string, limit int) ([]*Gif, error) {
 
 	// ensure the value for `limit` is valid
 	if err := validateLimit(limit, 1, 100); err != nil {

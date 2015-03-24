@@ -33,17 +33,17 @@ func TestCustomHttpClient(t *testing.T) {
 
 // Test search functionality. This is a table-driven test, using the data at
 // `tests.SearchTestData`.
-func TestSearch(t *testing.T) {
+func TestSearchGifs(t *testing.T) {
 	server := tests.SetupTestServer()
 	defer tests.TeardownTestServer(server)
 
-	for _, td := range tests.SearchTestData {
+	for _, td := range tests.SearchGifsTestData {
 
 		// gophy client configured to use test server
 		clientOptions := &ClientOptions{ApiKey: td.ApiKey, ApiEndpoint: server.URL}
 		client := NewClient(clientOptions)
 
-		searchResults, totalCount, err := client.Search(td.Q, td.Rating, td.Limit, td.Offset)
+		searchResults, totalCount, err := client.SearchGifs(td.Q, td.Rating, td.Limit, td.Offset)
 		if err != nil {
 			if !td.ExpectedError {
 				t.Errorf("Unexpected search error occurred (q=%s): %v", td.Q, err)
@@ -122,16 +122,16 @@ func TestGetGifsById(t *testing.T) {
 
 // Test translate functionality. This is a table-driven test, using the
 // data at `tests.TranslateTestData`.
-func TestTranslate(t *testing.T) {
+func TestTranslateGif(t *testing.T) {
 	server := tests.SetupTestServer()
 	defer tests.TeardownTestServer(server)
 
-	for _, td := range tests.TranslateTestData {
+	for _, td := range tests.TranslateGifTestData {
 		// gophy client configured to use test server
 		clientOptions := &ClientOptions{ApiKey: td.ApiKey, ApiEndpoint: server.URL}
 		client := NewClient(clientOptions)
 
-		_, err := client.Translate(td.Q, td.Rating)
+		_, err := client.TranslateGif(td.Q, td.Rating)
 		if err != nil {
 			if !td.ExpectedTranslateError {
 				t.Errorf("Unexpected translate error occurred (q=%s): %v", td.Q, err)
@@ -148,16 +148,16 @@ func TestTranslate(t *testing.T) {
 
 // Test trending functionality. This is a table-driven test, using the
 // data at `tests.TrendingTestData`.
-func TestTrending(t *testing.T) {
+func TestTrendingGifs(t *testing.T) {
 	server := tests.SetupTestServer()
 	defer tests.TeardownTestServer(server)
 
-	for _, td := range tests.TrendingTestData {
+	for _, td := range tests.TrendingGifsTestData {
 		// gophy client configured to use test server
 		clientOptions := &ClientOptions{ApiKey: td.ApiKey, ApiEndpoint: server.URL}
 		client := NewClient(clientOptions)
 
-		trendingResults, err := client.Trending(td.Rating, td.Limit)
+		trendingResults, err := client.TrendingGifs(td.Rating, td.Limit)
 		if err != nil {
 			if !td.ExpectedError {
 				t.Errorf("Unexpected error occurred: %v", err)
