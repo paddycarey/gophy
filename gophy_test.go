@@ -31,8 +31,8 @@ func TestCustomHttpClient(t *testing.T) {
 	}
 }
 
-// Test search functionality. This is a table-driven test, using the data at
-// `tests.SearchTestData`.
+// Test GIF search functionality. This is a table-driven test, using the data
+// at `tests.SearchTestData`.
 func TestSearchGifs(t *testing.T) {
 	server := tests.SetupTestServer()
 	defer tests.TeardownTestServer(server)
@@ -44,6 +44,41 @@ func TestSearchGifs(t *testing.T) {
 		client := NewClient(clientOptions)
 
 		searchResults, totalCount, err := client.SearchGifs(td.Q, td.Rating, td.Limit, td.Offset)
+		if err != nil {
+			if !td.ExpectedError {
+				t.Errorf("Unexpected search error occurred (q=%s): %v", td.Q, err)
+			}
+			continue
+		}
+		if err == nil && td.ExpectedError {
+			t.Errorf("Expected search error didn't happen (q=%s)", td.Q)
+			continue
+		}
+
+		if numResultsReturned := len(searchResults); numResultsReturned != td.ExpectedNumReturned {
+			t.Errorf("Expected %d search results, got %d: (q=%s)", td.ExpectedNumReturned, numResultsReturned, td.Q)
+		}
+
+		if totalCount != td.ExpectedTotalCount {
+			t.Errorf("Expected %d total results, got %d: (q=%s)", td.ExpectedTotalCount, totalCount, td.Q)
+		}
+
+	}
+}
+
+// Test sticker search functionality. This is a table-driven test, using the
+// data at `tests.SearchTestData`.
+func TestSearchStickers(t *testing.T) {
+	server := tests.SetupTestServer()
+	defer tests.TeardownTestServer(server)
+
+	for _, td := range tests.SearchStickersTestData {
+
+		// gophy client configured to use test server
+		clientOptions := &ClientOptions{ApiKey: td.ApiKey, ApiEndpoint: server.URL}
+		client := NewClient(clientOptions)
+
+		searchResults, totalCount, err := client.SearchStickers(td.Q, td.Rating, td.Limit, td.Offset)
 		if err != nil {
 			if !td.ExpectedError {
 				t.Errorf("Unexpected search error occurred (q=%s): %v", td.Q, err)
@@ -120,7 +155,7 @@ func TestGetGifsById(t *testing.T) {
 	}
 }
 
-// Test translate functionality. This is a table-driven test, using the
+// Test GIF translate functionality. This is a table-driven test, using the
 // data at `tests.TranslateTestData`.
 func TestTranslateGif(t *testing.T) {
 	server := tests.SetupTestServer()
@@ -146,7 +181,33 @@ func TestTranslateGif(t *testing.T) {
 	}
 }
 
-// Test trending functionality. This is a table-driven test, using the
+// Test sticker translate functionality. This is a table-driven test, using the
+// data at `tests.TranslateTestData`.
+func TestTranslateSticker(t *testing.T) {
+	server := tests.SetupTestServer()
+	defer tests.TeardownTestServer(server)
+
+	for _, td := range tests.TranslateStickerTestData {
+		// gophy client configured to use test server
+		clientOptions := &ClientOptions{ApiKey: td.ApiKey, ApiEndpoint: server.URL}
+		client := NewClient(clientOptions)
+
+		_, err := client.TranslateSticker(td.Q, td.Rating)
+		if err != nil {
+			if !td.ExpectedTranslateError {
+				t.Errorf("Unexpected translate error occurred (q=%s): %v", td.Q, err)
+			}
+			continue
+		}
+		if err == nil && td.ExpectedTranslateError {
+			t.Errorf("Expected translate error didn't happen (q=%s)", td.Q)
+			continue
+		}
+
+	}
+}
+
+// Test trending GIF functionality. This is a table-driven test, using the
 // data at `tests.TrendingTestData`.
 func TestTrendingGifs(t *testing.T) {
 	server := tests.SetupTestServer()
@@ -158,6 +219,36 @@ func TestTrendingGifs(t *testing.T) {
 		client := NewClient(clientOptions)
 
 		trendingResults, err := client.TrendingGifs(td.Rating, td.Limit)
+		if err != nil {
+			if !td.ExpectedError {
+				t.Errorf("Unexpected error occurred: %v", err)
+			}
+			continue
+		}
+		if err == nil && td.ExpectedError {
+			t.Error("Expected error didn't happen")
+			continue
+		}
+
+		if numResultsReturned := len(trendingResults); numResultsReturned != td.ExpectedNumReturned {
+			t.Errorf("Expected %d trending results, got %d", td.ExpectedNumReturned, numResultsReturned)
+		}
+
+	}
+}
+
+// Test trending functionality. This is a table-driven test, using the
+// data at `tests.TrendingTestData`.
+func TestTrendingStickers(t *testing.T) {
+	server := tests.SetupTestServer()
+	defer tests.TeardownTestServer(server)
+
+	for _, td := range tests.TrendingStickersTestData {
+		// gophy client configured to use test server
+		clientOptions := &ClientOptions{ApiKey: td.ApiKey, ApiEndpoint: server.URL}
+		client := NewClient(clientOptions)
+
+		trendingResults, err := client.TrendingStickers(td.Rating, td.Limit)
 		if err != nil {
 			if !td.ExpectedError {
 				t.Errorf("Unexpected error occurred: %v", err)

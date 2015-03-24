@@ -14,7 +14,6 @@ See [GoDoc](https://godoc.org/github.com/paddycarey/gophy) for full library docu
 ### TODO
 
 - Random endpoints
-- Sticker support
 - Full documentation
 
 
@@ -34,7 +33,7 @@ def main() {
 	co := &gophy.ClientOptions{}
 	client := gophy.NewClient(co)
 
-	gifs, err := gophy.Trending("", 20)
+	gifs, err := gophy.TrendingGifs("", 20)
 	if err != nil {
 		panic(err)
 	}

@@ -28,6 +28,33 @@ var SearchGifsTestData = []struct {
 	{"abc", "banana", 10, 0, "", true, 10, 1911},
 }
 
+var SearchStickersTestData = []struct {
+	ApiKey              string
+	Q                   string
+	Limit               int
+	Offset              int
+	Rating              string
+	ExpectedError       bool
+	ExpectedNumReturned int
+	ExpectedTotalCount  int
+}{
+	{"", "funny cats", 10, 0, "", false, 10, 15},
+	{"", "funny cats", 10, -1, "", true, 10, 15},
+	{"", "funny cats", 10, 0, "ad", true, 10, 15},
+	{"", "tom hiddleston", 20, 10, "g", false, 0, 4},
+	{"", "table flip", 99, 0, "", false, 0, 0},
+	{"", "facepalm", 100, 0, "", false, 21, 21},
+	{"", "picard", 20, 11, "", false, 0, 0},
+	{"", "kittens", 30, 32, "", false, 30, 100},
+	{"", "party hard", 4, 0, "", false, 4, 6},
+	{"", "friday", 50, 20, "", false, 30, 50},
+	{"", "snow", 60, 30, "", false, 34, 64},
+	{"", "new york", 100, 9000, "", false, 0, 25},
+	{"", "new york", 101, 9000, "", true, 0, 25},
+	{"", "", 100, 9000, "", true, 0, 4666},
+	{"abc", "banana", 10, 0, "", true, 10, 1911},
+}
+
 var GetGifByIdTestData = []struct {
 	ApiKey                  string
 	Id                      string
@@ -74,7 +101,36 @@ var TranslateGifTestData = []struct {
 	{"sf", "facepalm", "", true},
 }
 
+var TranslateStickerTestData = []struct {
+	ApiKey                 string
+	Q                      string
+	Rating                 string
+	ExpectedTranslateError bool
+}{
+	{"", "", "", true},
+	{"", "batman", "gf", true},
+	{"", "superman", "", false},
+	{"", "superman", "g", false},
+	{"", "burn", "", false},
+	{"", "smackdown", "", false},
+	{"sf", "facepalm", "", true},
+}
+
 var TrendingGifsTestData = []struct {
+	ApiKey              string
+	Rating              string
+	Limit               int
+	ExpectedError       bool
+	ExpectedNumReturned int
+}{
+	{"", "", -10, true, 0},
+	{"", "", 101, true, 0},
+	{"", "", 10, false, 10},
+	{"", "g", 100, false, 100},
+	{"sdf", "", 100, true, 0},
+	{"", "d", 100, true, 0},
+}
+var TrendingStickersTestData = []struct {
 	ApiKey              string
 	Rating              string
 	Limit               int

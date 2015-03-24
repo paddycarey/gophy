@@ -119,11 +119,9 @@ func (c *Client) GetGifsById(ids ...string) ([]*Gif, error) {
 	return pr.Data, nil
 }
 
-// SearchGifs searches the Giphy API for GIFs with the specified options.
-// Returns a slice containing the returned gifs, the total number of images
-// available for the specified query (so that you can paginate your requests as
-// required), and an error if one occured.
-func (c *Client) SearchGifs(q string, rating string, limit int, offset int) ([]*Gif, int, error) {
+// searchCommon provides common search functionality for both GIF and sticker
+// search endpoints.
+func (c *Client) searchCommon(q string, rating string, limit int, offset int, urlFragment string) ([]*Gif, int, error) {
 
 	// ensure the value for `limit` is valid
 	if err := validateLimit(limit, 1, 100); err != nil {
@@ -158,19 +156,30 @@ func (c *Client) SearchGifs(q string, rating string, limit int, offset int) ([]*
 
 	// construct and execute the HTTP request
 	sr := &paginatedResults{}
-	if err := c.makeRequest("gifs/search", qs, sr); err != nil {
+	if err := c.makeRequest(urlFragment, qs, sr); err != nil {
 		return nil, 0, err
 	}
 
 	return sr.Data, sr.Pagination.TotalCount, nil
 }
 
-// TranslateGifs is prototype endpoint for using Giphy as a translation engine
-// for a GIF dialect. The translate API draws on search, but uses the Giphy
-// "special sauce" to handle translating from one vocabulary to another. In
-// this case, words and phrases to GIFs. Returns a single GIF from the Giphy
-// API.
-func (c *Client) TranslateGif(q string, rating string) (*Gif, error) {
+// SearchGifs searches the Giphy API for GIFs with the specified options.
+// Returns a slice containing the returned gifs, the total number of images
+// available for the specified query (so that you can paginate your requests as
+// required), and an error if one occured.
+func (c *Client) SearchGifs(q string, rating string, limit int, offset int) ([]*Gif, int, error) {
+	return c.searchCommon(q, rating, limit, offset, "gifs/search")
+}
+
+// SearchStickers replicates the functionality and requirements of the classic
+// Giphy search, but returns animated stickers rather than gifs.
+func (c *Client) SearchStickers(q string, rating string, limit int, offset int) ([]*Gif, int, error) {
+	return c.searchCommon(q, rating, limit, offset, "stickers/search")
+}
+
+// translateCommon provides common search functionality for both GIF and
+// sticker translate endpoints.
+func (c *Client) translateCommon(q string, rating string, urlFragment string) (*Gif, error) {
 
 	// check that a query string was actually passed in
 	if len(q) < 1 {
@@ -192,16 +201,32 @@ func (c *Client) TranslateGif(q string, rating string) (*Gif, error) {
 
 	// construct and execute the HTTP request
 	sr := &singleResult{}
-	if err := c.makeRequest("gifs/translate", qs, sr); err != nil {
+	if err := c.makeRequest(urlFragment, qs, sr); err != nil {
 		return nil, err
 	}
 
 	return sr.Data, nil
 }
 
-// TrendingGifs fetches GIFs currently trending online. The data returned
-// mirrors that used to create The Hot 100 list of GIFs on Giphy.
-func (c *Client) TrendingGifs(rating string, limit int) ([]*Gif, error) {
+// TranslateGif is prototype endpoint for using Giphy as a translation engine
+// for a GIF dialect. The translate API draws on search, but uses the Giphy
+// "special sauce" to handle translating from one vocabulary to another. In
+// this case, words and phrases to GIFs. Returns a single GIF from the Giphy
+// API.
+func (c *Client) TranslateGif(q string, rating string) (*Gif, error) {
+	return c.translateCommon(q, rating, "gifs/translate")
+}
+
+// TranslateSticker replicates the functionality and requirements of the
+// classic Giphy translate endpoint, but returns animated stickers rather than
+// gifs.
+func (c *Client) TranslateSticker(q string, rating string) (*Gif, error) {
+	return c.translateCommon(q, rating, "stickers/translate")
+}
+
+// trendingCommon provides functionality common to bothe the GIF and sticker
+// trending endpoints.
+func (c *Client) trendingCommon(rating string, limit int, urlFragment string) ([]*Gif, error) {
 
 	// ensure the value for `limit` is valid
 	if err := validateLimit(limit, 1, 100); err != nil {
@@ -222,11 +247,24 @@ func (c *Client) TrendingGifs(rating string, limit int) ([]*Gif, error) {
 
 	// construct and execute the HTTP request
 	sr := &paginatedResults{}
-	if err := c.makeRequest("gifs/trending", qs, sr); err != nil {
+	if err := c.makeRequest(urlFragment, qs, sr); err != nil {
 		return nil, err
 	}
 
 	return sr.Data, nil
+}
+
+// TrendingGifs fetches GIFs currently trending online. The data returned
+// mirrors that used to create The Hot 100 list of GIFs on Giphy.
+func (c *Client) TrendingGifs(rating string, limit int) ([]*Gif, error) {
+	return c.trendingCommon(rating, limit, "gifs/trending")
+}
+
+// TrendingStickers replicates the functionality and requirements of the
+// classic Giphy trending endpoint, but returns animated stickers rather than
+// gifs.
+func (c *Client) TrendingStickers(rating string, limit int) ([]*Gif, error) {
+	return c.trendingCommon(rating, limit, "stickers/trending")
 }
 
 // validateRating checks if the given string matches an allowed value for the
