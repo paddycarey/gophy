@@ -29,7 +29,7 @@ import (
 	"github.com/paddycarey/gophy"
 )
 
-def main() {
+func main() {
 	co := &gophy.ClientOptions{}
 	client := gophy.NewClient(co)
 
